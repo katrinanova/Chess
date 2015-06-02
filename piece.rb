@@ -12,4 +12,10 @@ class Piece
   def moves
     raise NotImplementedError
   end
+
+  def move(pos)
+    @board[@position] = nil
+    @position = pos
+    @board[*pos] = self
+  end
 end

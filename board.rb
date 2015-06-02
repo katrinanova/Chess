@@ -1,9 +1,17 @@
+# http://copypastecharacter.com/emojis
+# encoding: utf-8
+
 require_relative 'Pawn.rb'
 require_relative 'Knight.rb'
 require_relative 'Bishop.rb'
 require_relative 'King.rb'
 require_relative 'Rook.rb'
 require_relative 'Queen.rb'
+
+require 'byebug'
+
+class IllegalMoveError < StandardError
+end
 
 class Board
 
@@ -57,8 +65,6 @@ class Board
     end
 
     all_enemy_moves.include?(king_pos)
-
-
   end
 
   def find_king(color)
@@ -78,6 +84,75 @@ class Board
     return :white if color == :black
     return :black
   end
+
+  def occupied?(pos)
+    !@board[pos].nil?
+  end
+
+  def move(start, end_pos)
+    raise IllegalMoveError unless @board[*start].occupied?
+    piece = @board[*start]
+    raise IllegalMoveError unless piece.moves.include?(end_pos)
+    piece.move(end_pos)
+  end
+
+  def display
+    horizontal = "+-------------------------------+"
+    puts horizontal
+
+    @board.each_with_index do |row, row_idx|
+      print "|"
+      row.each_with_index do |square, col_idx|
+
+
+        case square
+        when Pawn
+          if square.color == :black
+            print " ♟ |"
+          else
+            print " ♙ |"
+          end
+        when Knight
+          if square.color == :black
+            print " ♞ |"
+          else
+            print " ♘ |"
+          end
+        when Bishop
+          if square.color == :black
+            print " ♝ |"
+          else
+            print " ♗ |"
+          end
+        when Rook
+          if square.color == :black
+            print " ♜ |"
+          else
+            print " ♖ |"
+          end
+        when Queen
+          if square.color == :black
+            print " ♚ |"
+          else
+            print " ♔ |"
+          end
+        when King
+          if square.color == :black
+            print " ♛ |"
+          else
+            print " ♕ |"
+          end
+        else
+          print "   |"
+        end
+      end
+      puts "\n"
+      puts horizontal
+    end
+
+    nil
+  end
+
 
 
 end
