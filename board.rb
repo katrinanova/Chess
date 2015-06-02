@@ -76,8 +76,6 @@ class Board
     enemy_pieces = get_all_pieces(switch_color(color))
     all_enemy_moves = []
 
-    debugger
-
     enemy_pieces.each do |piece|
       all_enemy_moves += piece.moves
     end
@@ -105,9 +103,6 @@ class Board
     return :black
   end
 
-  def occupied?(pos)
-    !self[*pos].nil?
-  end
 
   def move(start, end_pos)
     raise IllegalMoveError unless self.occupied?(start)
@@ -174,11 +169,17 @@ class Board
   end
 
   def edge?(pos)
-    !pos.any? { |coor| coor.between?(0, 7)}
+    !pos.all? { |coor| coor.between?(0, 7)}
   end
 
   def enemy?(pos, color)
+    return false if self.edge?(pos)
     self[*pos].color != color
+  end
+
+  def occupied?(pos)
+    return false if self.edge?(pos)
+    !self[*pos].nil?
   end
 
 

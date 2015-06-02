@@ -1,3 +1,4 @@
+require 'byebug'
 require_relative 'piece.rb'
 
 class SlidingPiece < Piece
@@ -9,10 +10,10 @@ class SlidingPiece < Piece
     move_dirs.each do |dir|
       dx, dy = dir
       new_position = [x + dx, y + dy]
-      until @board.occupied?(new_position) || @board.edge?(new_position)
-        valid_moves << new_position
-        new_position[0] += dx
-        new_position[1] += dy
+      while !@board.edge?(new_position) && !@board.occupied?(new_position)
+        valid_moves << new_position.dup
+        new_position[0] = new_position[0] + dx
+        new_position[1] = new_position[1] + dy
       end
 
       if @board.occupied?(new_position) && @board.enemy?(new_position, color)
