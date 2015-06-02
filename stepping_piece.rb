@@ -1,6 +1,6 @@
 require_relative 'piece.rb'
 
-class SlidingPiece < Piece
+class SteppingPiece < Piece
 
   def moves
     valid_moves = []
@@ -9,15 +9,15 @@ class SlidingPiece < Piece
     move_dirs.each do |dir|
       dx, dy = dir
       new_position = [x + dx, y + dy]
-      until @board.occupied?(new_position) || @board.edge?(new_position)
+
+      unless @board.occupied?(new_position) || @board.edge?(new_position)
         valid_moves << new_position
-        new_position[0] += dx
-        new_position[1] += dy
       end
 
       if @board.enemy?(new_position, color)
         valid_moves << new_position
       end
+
     end
 
     valid_moves
