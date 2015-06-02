@@ -1,6 +1,7 @@
 class Piece
 
   attr_reader :position, :color
+  attr_accessor :board
 
   def initialize(start_pos, board, color)
     @position = start_pos
@@ -14,8 +15,16 @@ class Piece
   end
 
   def move(pos)
-    @board[@position] = nil
+    @board[*@position] = nil
     @position = pos
     @board[*pos] = self
   end
+
+  def move_into_check(pos)
+    new_board = @board.deep_dup
+  end
+
+
+
+
 end

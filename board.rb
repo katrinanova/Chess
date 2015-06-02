@@ -15,12 +15,26 @@ end
 
 class Board
 
+  def self.deep_dup
+    new_board = Board.new
+    @board.flatten.each do |square|
+      unless square.nil?
+        new_square = square.dup
+        new_square.board = new_board
+        new_board[*new_square.position] = new_square
+      end
+    end
+
+    new_board
+  end
+
   def initialize
     @board = Array.new(8) { Array.new(8) }
+  end
 
+  def play
     setup_color(:black)
     setup_color(:white)
-
   end
 
   def setup_color(color)
@@ -86,12 +100,12 @@ class Board
   end
 
   def occupied?(pos)
-    !@board[pos].nil?
+    !self[*pos].nil?
   end
 
   def move(start, end_pos)
-    raise IllegalMoveError unless @board[*start].occupied?
-    piece = @board[*start]
+    raise IllegalMoveError unless self.occupied?(start)
+    piece = self[*start]
     raise IllegalMoveError unless piece.moves.include?(end_pos)
     piece.move(end_pos)
   end
@@ -103,7 +117,6 @@ class Board
     @board.each_with_index do |row, row_idx|
       print "|"
       row.each_with_index do |square, col_idx|
-
 
         case square
         when Pawn
@@ -153,6 +166,13 @@ class Board
     nil
   end
 
+  def edge?(pos)
+    !pos.any? { |coor| coor.between?(0, 7)}
+  end
+
+  def enemy?(pos, color)
+    self[*pos].color != color
+  end
 
 
 end

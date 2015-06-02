@@ -1,4 +1,6 @@
 require_relative 'piece.rb'
+require 'byebug'
+
 
 class Pawn < Piece
 
@@ -6,6 +8,8 @@ class Pawn < Piece
   def moves
     valid_moves = []
     x, y = @position
+
+    #debugger
 
     move_dirs.each do |dir|
       dx, dy = dir
@@ -18,7 +22,7 @@ class Pawn < Piece
     attack_dirs.each do |dir|
       dx, dy = dir
       new_position = [x + dx, y + dy]
-      if @board.enemy?(new_position)
+      if @board.occupied?(new_position) && @board.enemy?(new_position, color)
         valid_moves << new_position
       end
     end
@@ -28,24 +32,24 @@ class Pawn < Piece
 
   def move_dirs
     valid_moves = []
-    if color == :white
-      valid_moves << [0, 1]
-      if @position[0] == 6
-        valid_moves << [0, 2]
+    if color == :black
+      valid_moves << [1, 0]
+      if @position[0] == 1
+        valid_moves << [2, 0]
       end
     else
-      valid_moves << [0, -1]
-      if @position[0] == 1
-        valid_moves << [0, -2]
+      valid_moves << [-1, 0]
+      if @position[0] == 6
+        valid_moves << [-2, 0]
       end
     end
   end
 
-  def attck_dirs
-    if color == :white
-      [[1, 1], [-1, 1]]
+  def attack_dirs
+    if color == :black
+      [[1, 1], [1, -1]]
     else
-      [[1, -1], [-1, -1]]
+      [[-1, -1], [-1, 1]]
     end
   end
 
