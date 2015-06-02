@@ -15,11 +15,12 @@ end
 
 class Board
 
-  def self.deep_dup
+  def deep_dup
     new_board = Board.new
     @board.flatten.each do |square|
       unless square.nil?
         new_square = square.dup
+        new_square.position = square.position.dup
         new_square.board = new_board
         new_board[*new_square.position] = new_square
       end
@@ -35,6 +36,7 @@ class Board
   def play
     setup_color(:black)
     setup_color(:white)
+    nil
   end
 
   def setup_color(color)
@@ -74,6 +76,8 @@ class Board
     enemy_pieces = get_all_pieces(switch_color(color))
     all_enemy_moves = []
 
+    debugger
+
     enemy_pieces.each do |piece|
       all_enemy_moves += piece.moves
     end
@@ -85,12 +89,14 @@ class Board
     @board
       .flatten
       .select { |piece| piece.is_a?(King) && piece.color == color }
+      .first
       .position
   end
 
   def get_all_pieces(color)
     @board
       .flatten
+      .reject { |square| square.nil? }
       .select { |piece| piece.color == color }
   end
 
@@ -108,6 +114,7 @@ class Board
     piece = self[*start]
     raise IllegalMoveError unless piece.moves.include?(end_pos)
     piece.move(end_pos)
+    self.display
   end
 
   def display

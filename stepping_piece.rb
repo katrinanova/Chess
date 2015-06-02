@@ -14,7 +14,7 @@ class SteppingPiece < Piece
         valid_moves << new_position
       end
 
-      if @board.enemy?(new_position, color)
+      if @board.occupied?(new_position) && @board.enemy?(new_position, color)
         valid_moves << new_position
       end
 

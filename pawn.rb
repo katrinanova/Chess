@@ -43,6 +43,8 @@ class Pawn < Piece
         valid_moves << [-2, 0]
       end
     end
+    
+    valid_moves
   end
 
   def attack_dirs

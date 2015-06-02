@@ -15,7 +15,7 @@ class SlidingPiece < Piece
         new_position[1] += dy
       end
 
-      if @board.enemy?(new_position, color)
+      if @board.occupied?(new_position) && @board.enemy?(new_position, color)
         valid_moves << new_position
       end
     end
