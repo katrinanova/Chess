@@ -47,4 +47,37 @@ class Board
     @board[x][y] = piece
   end
 
+  def in_check?(color)
+    king_pos = find_king(color)
+    enemy_pieces = get_all_pieces(switch_color(color))
+    all_enemy_moves = []
+
+    enemy_pieces.each do |piece|
+      all_enemy_moves += piece.moves
+    end
+
+    all_enemy_moves.include?(king_pos)
+
+
+  end
+
+  def find_king(color)
+    @board
+      .flatten
+      .select { |piece| piece.is_a?(King) && piece.color == color }
+      .position
+  end
+
+  def get_all_pieces(color)
+    @board
+      .flatten
+      .select { |piece| piece.color == color }
+  end
+
+  def switch_color(color)
+    return :white if color == :black
+    return :black
+  end
+
+
 end
