@@ -13,6 +13,9 @@ require 'byebug'
 class IllegalMoveError < StandardError
 end
 
+class SelfCheckError < StandardError
+end
+
 class Board
 
   def deep_dup
@@ -104,12 +107,17 @@ class Board
   end
 
 
-  def move(start, end_pos)
+  def move!(start, end_pos)
     raise IllegalMoveError unless self.occupied?(start)
     piece = self[*start]
     raise IllegalMoveError unless piece.moves.include?(end_pos)
     piece.move(end_pos)
     self.display
+  end
+
+  def move(start, end_pos)
+    raise SelfCheckError if self[*start].move_into_check?(end_pos)
+    move!(start, end_pos)
   end
 
   def display
@@ -181,6 +189,20 @@ class Board
     return false if self.edge?(pos)
     !self[*pos].nil?
   end
+
+  def checkmate?(color)
+    pieces = self.get_all_pieces(color)
+
+    pieces.each do |piece|
+      moves = piece.moves
+      moves.each do |move|
+        return false if !piece.move_into_check?(move)
+      end
+    end
+
+    true
+  end
+
 
 
 end
