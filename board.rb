@@ -1,10 +1,14 @@
-require_relative '*.rb'
+require_relative 'Pawn.rb'
+require_relative 'Knight.rb'
+require_relative 'Bishop.rb'
+require_relative 'King.rb'
+require_relative 'Rook.rb'
+require_relative 'Queen.rb'
 
 class Board
 
-  def initialize(board)
+  def initialize
     @board = Array.new(8) { Array.new(8) }
-
 
     setup_color(:black)
     setup_color(:white)

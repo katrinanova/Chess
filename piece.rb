@@ -3,6 +3,7 @@ class Piece
     @position = start_pos
     @board = board
     @color = color
+    @board[*start_pos] = self
   end
 
   def moves
