@@ -6,19 +6,17 @@ end
 class SelfCheckError < StandardError
 end
 
+class OpponentPieceError < StandardError
+end
+
 class Board
+
+  PIECE_ORDER = [Rook, Knight, Bishop, Queen,
+                 King, Bishop, Knight, Rook ]
 
   def deep_dup
     new_board = Board.new
-    @board.flatten.each do |square|
-      unless square.nil?
-        new_square = square.dup
-        new_square.position = square.position.dup
-        new_square.board = new_board
-        new_board[*new_square.position] = new_square
-      end
-    end
-
+    self.get_pieces.each {|piece| new_square = piece.dup(piece.class, new_board)}
     new_board
   end
 
@@ -33,28 +31,27 @@ class Board
   end
 
   def setup_color(color)
+    setup_royalty(color)
+    setup_pawns(color)
+  end
 
-    if color == :white
-      row = 7
-      pawn_row = 6
-    else
-      row = 0
-      pawn_row = 1
-    end
+  def setup_royalty(color)
+    row = color == :white ? 7 : 0
 
-    Rook.new([row, 0], self, color)
-    Knight.new([row, 1], self, color)
-    Bishop.new([row, 2], self, color)
-    Queen.new([row, 3], self, color)
-    King.new([row, 4],  self, color)
-    Bishop.new([row, 5], self, color)
-    Knight.new([row, 6], self, color)
-    Rook.new([row, 7], self, color)
-
-    8.times do |i|
-      Pawn.new([pawn_row, i], self, color)
+    PIECE_ORDER.each_with_index do |piece, col|
+      piece.new([row, col], self, color)
     end
   end
+
+  def setup_pawns(color)
+    row = color == :white ? 6 : 1
+
+    8.times do |col|
+      Pawn.new([row, col], self, color)
+    end
+  end
+
+
 
   def [](row, col)
     @board[row][col]
@@ -65,8 +62,8 @@ class Board
   end
 
   def in_check?(color)
-    king_pos = find_king(color)
-    enemy_pieces = get_all_pieces(switch_color(color))
+    king_pos = find_king_pos(color)
+    enemy_pieces = get_color_pieces(switch_color(color))
     all_enemy_moves = []
 
     enemy_pieces.each do |piece|
@@ -76,19 +73,24 @@ class Board
     all_enemy_moves.include?(king_pos)
   end
 
-  def find_king(color)
-    @board
-      .flatten
-      .select { |piece| piece.is_a?(King) && piece.color == color }
+  def find_king_pos(color)
+    self
+      .get_color_pieces(color)
+      .select { |piece| piece.is_a?(King) }
       .first
       .position
   end
 
-  def get_all_pieces(color)
+  def get_color_pieces(color)
+    self
+      .get_pieces
+      .select { |piece| piece.color == color }
+  end
+
+  def get_pieces
     @board
       .flatten
-      .reject { |square| square.nil? }
-      .select { |piece| piece.color == color }
+      .compact
   end
 
   def switch_color(color)
@@ -96,13 +98,15 @@ class Board
   end
 
   def move!(start, end_pos)
-    raise IllegalMoveError unless self.occupied?(start)
+    debugger
     piece = self[*start]
     raise IllegalMoveError unless piece.moves.include?(end_pos)
     piece.move(end_pos)
   end
 
-  def move(start, end_pos)
+  def move(color, start, end_pos)
+    raise IllegalMoveError unless self.occupied?(start)
+    raise OpponentPieceError unless self[*start].color == color
     raise SelfCheckError if self[*start].move_into_check?(end_pos)
     move!(start, end_pos)
   end
@@ -114,47 +118,7 @@ class Board
     @board.each_with_index do |row, row_idx|
       print "|"
       row.each_with_index do |square, col_idx|
-
-        case square
-        when Pawn
-          if square.color == :black
-            print " ♟ |"
-          else
-            print " ♙ |"
-          end
-        when Knight
-          if square.color == :black
-            print " ♞ |"
-          else
-            print " ♘ |"
-          end
-        when Bishop
-          if square.color == :black
-            print " ♝ |"
-          else
-            print " ♗ |"
-          end
-        when Rook
-          if square.color == :black
-            print " ♜ |"
-          else
-            print " ♖ |"
-          end
-        when Queen
-          if square.color == :black
-            print " ♛ |"
-          else
-            print " ♕ |"
-          end
-        when King
-          if square.color == :black
-            print " ♚ |"
-          else
-            print " ♔ |"
-          end
-        else
-          print "   |"
-        end
+        square.nil? ? print("   |") : print(" #{square.display} |")
       end
       puts "\n"
       puts horizontal
@@ -178,7 +142,7 @@ class Board
   end
 
   def checkmate?(color)
-    pieces = self.get_all_pieces(color)
+    pieces = self.get_color_pieces(color)
 
     pieces.each do |piece|
       piece.moves.each do |move|

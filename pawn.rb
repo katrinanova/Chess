@@ -1,5 +1,9 @@
 class Pawn < Piece
 
+  def display
+    color == :white ? "♙" : "♟"
+  end
+
   def moves
     valid_moves = []
     x, y = @position
@@ -28,10 +32,10 @@ class Pawn < Piece
     valid_moves = []
     if color == :black
       valid_moves << [1, 0]
-      valid_moves << [2, 0]  if @position[0] == 1
+      valid_moves << [2, 0]  if starting_position?
     else
       valid_moves << [-1, 0]
-      valid_moves << [-2, 0] if @position[0] == 6
+      valid_moves << [-2, 0] if starting_position?
     end
 
     valid_moves
@@ -43,5 +47,9 @@ class Pawn < Piece
     else
       [[-1, -1], [-1, 1]]
     end
+  end
+
+  def starting_position?
+    color == :black ? (@position[0] == 1) : (@position[0] == 6)
   end
 end

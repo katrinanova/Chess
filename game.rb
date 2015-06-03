@@ -1,4 +1,4 @@
-require 'manifest.rb'
+require_relative 'manifest.rb'
 
 class Game
   #for debug purposes
@@ -20,11 +20,15 @@ class Game
       begin
         next_move = @current_player.play_turn
 
-        @board.move(*next_move)
+        @board.move(@current_player.color, *next_move)
         toggle_player
 
       rescue SelfCheckError
         puts "You can't make that move, it would put you in check, please retry"
+        retry
+
+      rescue OpponentPieceError
+        puts "It's not your piece, plese retry"
         retry
 
       rescue IllegalMoveError
