@@ -29,4 +29,8 @@ class Piece
     new_board.move!(position, pos)
     new_board.in_check?(color)
   end
+
+  def inspect
+    "#{self.color} #{self.class} at #{position[0]}, #{position[1]} "
+  end
 end

@@ -32,10 +32,12 @@ class Pawn < Piece
     valid_moves = []
     if color == :black
       valid_moves << [1, 0]
-      valid_moves << [2, 0]  if starting_position?
+      valid_moves << [2, 0]  if starting_position? &&
+                              !@board.occupied?([position[0]+1, position[1]])
     else
       valid_moves << [-1, 0]
-      valid_moves << [-2, 0] if starting_position?
+      valid_moves << [-2, 0] if starting_position? &&
+                              !@board.occupied?([position[0]-1, position[1]])
     end
 
     valid_moves
