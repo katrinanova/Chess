@@ -1,5 +1,3 @@
-require_relative 'piece.rb'
-
 class SteppingPiece < Piece
 
   def moves
@@ -17,10 +15,8 @@ class SteppingPiece < Piece
       if @board.occupied?(new_position) && @board.enemy?(new_position, color)
         valid_moves << new_position
       end
-
     end
 
     valid_moves
   end
-
 end

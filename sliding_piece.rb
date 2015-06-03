@@ -1,6 +1,3 @@
-require 'byebug'
-require_relative 'piece.rb'
-
 class SlidingPiece < Piece
 
   def moves
@@ -12,8 +9,8 @@ class SlidingPiece < Piece
       new_position = [x + dx, y + dy]
       while !@board.edge?(new_position) && !@board.occupied?(new_position)
         valid_moves << new_position.dup
-        new_position[0] = new_position[0] + dx
-        new_position[1] = new_position[1] + dy
+        new_position[0] += dx
+        new_position[1] += dy
       end
 
       if @board.occupied?(new_position) && @board.enemy?(new_position, color)
@@ -23,5 +20,4 @@ class SlidingPiece < Piece
 
     valid_moves
   end
-
 end

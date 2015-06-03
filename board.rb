@@ -1,14 +1,4 @@
-# http://copypastecharacter.com/emojis
 # encoding: utf-8
-
-require_relative 'Pawn.rb'
-require_relative 'Knight.rb'
-require_relative 'Bishop.rb'
-require_relative 'King.rb'
-require_relative 'Rook.rb'
-require_relative 'Queen.rb'
-
-require 'byebug'
 
 class IllegalMoveError < StandardError
 end
@@ -45,33 +35,33 @@ class Board
   def setup_color(color)
 
     if color == :white
-      x = 7
-      px = 6
+      row = 7
+      pawn_row = 6
     else
-      x = 0
-      px = 1
+      row = 0
+      pawn_row = 1
     end
 
-    Rook.new([x,0], self, color)
-    Knight.new([x,1], self, color)
-    Bishop.new([x,2], self, color)
-    Queen.new([x,3], self, color)
-    King.new([x,4],  self, color)
-    Bishop.new([x,5], self, color)
-    Knight.new([x,6], self, color)
-    Rook.new([x,7], self, color)
+    Rook.new([row, 0], self, color)
+    Knight.new([row, 1], self, color)
+    Bishop.new([row, 2], self, color)
+    Queen.new([row, 3], self, color)
+    King.new([row, 4],  self, color)
+    Bishop.new([row, 5], self, color)
+    Knight.new([row, 6], self, color)
+    Rook.new([row, 7], self, color)
 
     8.times do |i|
-      Pawn.new([px, i], self, color)
+      Pawn.new([pawn_row, i], self, color)
     end
-
-  end
-  def [](x, y)
-    @board[x][y]
   end
 
-  def []=(x, y, piece)
-    @board[x][y] = piece
+  def [](row, col)
+    @board[row][col]
+  end
+
+  def []=(row, col, piece)
+    @board[row][col] = piece
   end
 
   def in_check?(color)
@@ -102,10 +92,8 @@ class Board
   end
 
   def switch_color(color)
-    return :white if color == :black
-    return :black
+    color == :black ? :white : :black
   end
-
 
   def move!(start, end_pos)
     raise IllegalMoveError unless self.occupied?(start)
@@ -154,15 +142,15 @@ class Board
           end
         when Queen
           if square.color == :black
-            print " ♚ |"
-          else
-            print " ♔ |"
-          end
-        when King
-          if square.color == :black
             print " ♛ |"
           else
             print " ♕ |"
+          end
+        when King
+          if square.color == :black
+            print " ♚ |"
+          else
+            print " ♔ |"
           end
         else
           print "   |"
@@ -193,15 +181,11 @@ class Board
     pieces = self.get_all_pieces(color)
 
     pieces.each do |piece|
-      moves = piece.moves
-      moves.each do |move|
+      piece.moves.each do |move|
         return false if !piece.move_into_check?(move)
       end
     end
 
     true
   end
-
-
-
 end

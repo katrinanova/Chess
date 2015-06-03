@@ -1,5 +1,3 @@
-require_relative 'player.rb'
-
 class BadInputError < StandardError
 end
 
@@ -16,20 +14,12 @@ class HumanPlayer < Player
     rescue BadInputError
       puts "Incorrect input format, please try again"
       retry
-
   end
 
   def parse(move)
     move = move.split(",").map { |s| s.strip }
     letters = %w(a b c d e f g h)
 
-    arr = move.map do |s|
-      pos = []
-      pos << 8 - s[1].to_i << letters.find_index(s[0])
-      pos
-    end
-
-
+    move.map { |s| [8 - s[1].to_i, letters.find_index(s[0])] }
   end
-
 end

@@ -1,15 +1,8 @@
-require_relative 'piece.rb'
-require 'byebug'
-
-
 class Pawn < Piece
-
 
   def moves
     valid_moves = []
     x, y = @position
-
-    #debugger
 
     move_dirs.each do |dir|
       dx, dy = dir
@@ -30,19 +23,15 @@ class Pawn < Piece
     valid_moves
   end
 
-  
+
   def move_dirs
     valid_moves = []
     if color == :black
       valid_moves << [1, 0]
-      if @position[0] == 1
-        valid_moves << [2, 0]
-      end
+      valid_moves << [2, 0]  if @position[0] == 1
     else
       valid_moves << [-1, 0]
-      if @position[0] == 6
-        valid_moves << [-2, 0]
-      end
+      valid_moves << [-2, 0] if @position[0] == 6
     end
 
     valid_moves
@@ -55,7 +44,4 @@ class Pawn < Piece
       [[-1, -1], [-1, 1]]
     end
   end
-
-
-
 end
