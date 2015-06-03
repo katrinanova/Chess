@@ -4,7 +4,7 @@ class BadInputError < StandardError
 end
 
 class HumanPlayer < Player
-  VALID_MOVE_REGEX = /[a-h][0-7], ?[a-h][0-7]/
+  VALID_MOVE_REGEX = /[a-h][1-8], ?[a-h][1-8]/
 
   def play_turn
     puts "What is your move? (f2, f3)"
@@ -16,7 +16,7 @@ class HumanPlayer < Player
     rescue BadInputError
       puts "Incorrect input format, please try again"
       retry
-      
+
   end
 
   def parse(move)
@@ -25,11 +25,11 @@ class HumanPlayer < Player
 
     arr = move.map do |s|
       pos = []
-      pos << letters.find_index(s[0]) << s[1].to_i
+      pos << 8 - s[1].to_i << letters.find_index(s[0])
       pos
     end
 
-    arr
+
   end
 
 end

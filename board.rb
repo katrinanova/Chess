@@ -36,7 +36,7 @@ class Board
     @board = Array.new(8) { Array.new(8) }
   end
 
-  def play
+  def new_game_setup
     setup_color(:black)
     setup_color(:white)
     nil
@@ -112,7 +112,6 @@ class Board
     piece = self[*start]
     raise IllegalMoveError unless piece.moves.include?(end_pos)
     piece.move(end_pos)
-    self.display
   end
 
   def move(start, end_pos)

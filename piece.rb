@@ -1,3 +1,4 @@
+require 'byebug'
 class Piece
 
   attr_reader  :color
@@ -22,7 +23,8 @@ class Piece
 
   def move_into_check?(pos)
     new_board = @board.deep_dup
-    new_board.move(@position, pos)
+    #debugger
+    new_board.move!(@position, pos)
     new_board.in_check?(@color)
   end
 
