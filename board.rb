@@ -16,7 +16,7 @@ class Board
 
   def deep_dup
     new_board = Board.new
-    self.get_pieces.each {|piece| new_square = piece.dup(piece.class, new_board)}
+    self.get_pieces.each {|piece| new_square = piece.dup(new_board)}
     new_board
   end
 
@@ -98,7 +98,6 @@ class Board
   end
 
   def move!(start, end_pos)
-    debugger
     piece = self[*start]
     raise IllegalMoveError unless piece.moves.include?(end_pos)
     piece.move(end_pos)

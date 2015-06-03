@@ -4,11 +4,18 @@ class Game
   #for debug purposes
   attr_reader :board
 
-  def initialize(white_player, black_player)
+  def initialize(white_player, black_player, board)
     @white_player = white_player
     @black_player = black_player
-    @board = Board.new
+    @board = board
     @current_player = @white_player
+  end
+
+  def self.test_setup
+    human = HumanPlayer.new("test", :white)
+    board = Board.new
+    comp  = ComputerPlayer.new(:black, board)
+    Game.new(human, comp, board).play
   end
 
   def play
@@ -24,7 +31,9 @@ class Game
         toggle_player
 
       rescue SelfCheckError
-        puts "You can't make that move, it would put you in check, please retry"
+        unless @current_player.is_a?(ComputerPlayer)
+          puts "You can't make that move, it would put you in check, please retry"
+        end
         retry
 
       rescue OpponentPieceError

@@ -10,8 +10,8 @@ class Piece
     @board[*start_pos] = self
   end
 
-  def dup(piece_class, new_board)
-    piece_class.new(position, new_board, color)
+  def dup(new_board)
+    self.class.new(position, new_board, color)
   end
 
   def moves
@@ -20,7 +20,7 @@ class Piece
 
   def move(pos)
     board[*position] = nil
-    position = pos
+    self.position = pos
     board[*pos] = self
   end
 
